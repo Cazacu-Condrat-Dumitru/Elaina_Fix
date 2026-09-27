@@ -67,6 +67,19 @@ In the light novel and anime, Elaina develops a magical spell that temporarily b
   - Voiced in text with pastel pink font.
   - Speaks genuine, cheerful, and polite quotes calling Elaina *"Lady Elaina"*, playfully teasing her when summoned for *"an extra pair of hands"*, and reminding her to eat sweets when hungry.
 
+### 4. Traveler's Warded Pack (elena_pack)
+- **75% Defensive Ward**: Woven with starlight wards, providing 75% physical damage reduction without needing bulky wooden or marble armor.
+- **Hands-Free Starlight Illumination**: Emits a soft celestial glow while equipped on the body, freeing both hands for weapons or broom flight at night.
+- **Food Preservation**: Features magical cooling that halves food and ingredient spoilage rate (acting as an enchanted travel cooler).
+- **Thermal & Weather Insulation**: Protects against hypothermia in winter and overheating in summer, plus 50% water resistance.
+- **Craftable & Starter Gear**: Elaina starts with her satchel, and can re-craft it from the Survival tab with basic materials (grass, twigs, rope).
+
+### 5. Defensive Magic & Flight Utility
+- **Gale Repulsion (Hotkey: `Z`)**: Releases a concussive burst of starlight wind that repels nearby aggressive enemies up to 7 units away, staggering attackers and creating breathing room.
+- **Mana Barrier (Emergency Ward)**: If Elaina receives a lethal blow that would otherwise kill her, her mana barrier instantly activates, negating death, restoring an emergency health buffer, releasing an automatic Gale Repulsion, and entering a 3-minute cooldown.
+- **Flight Resource Magnetism**: While soaring on her broom, nearby ground resources (grass, twigs, flint, petals, monster loot) are automatically collected into inventory or pack.
+- **Frost Nova (Frost Elixir)**: Consuming `potion_icepowder` now unleashes a Frost Nova, instantly freezing nearby monsters and putting out fires in a 12-unit radius in addition to temporarily enchanting equipped weapons with ice attacks.
+
 ---
 
 ## Mod Configuration (modinfo.lua)

@@ -21,5 +21,20 @@ Version 1.0 Update Log:
    - Added autonomous ranged magic combat AI with homing projectiles.
    - Implemented sweets and magic potion upgrade systems.
    - Added progressive power evolution across levels (Apprentice -> Arch-Witch -> Celestial Starlight).
-   - Added custom portraits, avatars, and minimap icons for Hoki matching light novel pink hair (utilizing the original character model with pink hair; custom dedicated models and level-based visual updates planned for future releases).
    - Created full open-source GitHub documentation (README.md, CREDITS.md, .gitignore).
+
+6. Traveler's Warded Pack (elena_pack):
+   - Signature enchanted backpack with 75% defense absorption, hands-free starlight illumination, food preservation (fridge effect), and weather insulation against freezing/overheating.
+
+7. Gale Repulsion Defense:
+   - Added emergency starlight wind burst (Hotkey: 'Z') that pushes back and staggers nearby aggressive enemies.
+
+8. Mana Barrier:
+   - Added passive emergency barrier that prevents one-shot lethal blows, restoring emergency health and activating an automatic Gale Repulsion on a 3-minute cooldown.
+
+9. Flight Resource Magnetism:
+   - Added automatic ground resource vacuuming while flying on the broom.
+
+10. Frost Nova:
+   - Enhanced Frost Elixir (potion_icepowder) to unleash an instant AOE freezing wave that extinguishes fires and freezes nearby monsters.
+
