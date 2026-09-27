@@ -1,0 +1,25 @@
+Version 1.0 Update Log:
+--------------------------------------------------------------------------------
+1. Complete English Localization:
+   - Translated all Chinese and foreign comments across all Lua scripts to clean English.
+   - Cleaned all non-ASCII characters to prevent rendering glitches with Don't Starve bitmap fonts.
+
+2. UI & Configuration Improvements:
+   - Streamlined option labels in modinfo.lua to prevent button text clipping in the Don't Starve configuration menu.
+
+3. Lore-Accurate Genius Witch Progression:
+   - Added science_bonus = 1 to reflect Elaina's prodigy witch background.
+   - Unlocked innate crafting knowledge for lantern, compass, and sewing_kit.
+   - Added 3-tier Light Novel progression for Elaina (Apprentice -> Wandering Sorceress with ambient light and speed -> Legendary Arch-Witch with celestial starlight aura and Mana Shield thermal protection).
+
+4. Broom Flight System:
+   - Added aerial flight when pressing 'R' with the broom equipped at Level 10+.
+   - Grants +60% movement speed, water gliding, obstacle phasing, and sparkling particles.
+
+5. Hoki (Broom-san) Companion System:
+   - Implemented dual-form transformation between Broom weapon and Hoki companion via the Ancient Grimoire.
+   - Added autonomous ranged magic combat AI with homing projectiles.
+   - Implemented sweets and magic potion upgrade systems.
+   - Added progressive power evolution across levels (Apprentice -> Arch-Witch -> Celestial Starlight).
+   - Added custom portraits, avatars, and minimap icons for Hoki matching light novel pink hair (utilizing the original character model with pink hair; custom dedicated models and level-based visual updates planned for future releases).
+   - Created full open-source GitHub documentation (README.md, CREDITS.md, .gitignore).

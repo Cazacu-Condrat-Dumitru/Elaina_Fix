@@ -1,0 +1,9 @@
+<Atlas>
+	<Texture filename="potions.tex" />
+    <Elements>
+        <Element name="potion_sourceliquid.tex" u1="0" u2="0.25" v1="0.75" v2="1" />
+        <Element name="potion_icepowder.tex" u1="0.25" u2="0.5" v1="0.75" v2="1" />
+        <Element name="potion_magic.tex" u1="0.5" u2="0.75" v1="0.75" v2="1" />
+        <Element name="potion_soar.tex" u1="0" u2="0.25" v1="0.5" v2="0.75" />
+    </Elements>
+</Atlas>

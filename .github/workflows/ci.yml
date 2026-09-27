@@ -1,0 +1,48 @@
+name: CI - Mod Integrity & Syntax Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'change log.txt'
+      - 'LICENSE*'
+      - '.gitignore'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'change log.txt'
+      - 'LICENSE*'
+      - '.gitignore'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Mod Validation & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Lua 5.1 compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+
+      - name: Check Lua 5.1 syntax compilation
+        run: |
+          echo "=== Testing Lua 5.1 syntax on all mod files ==="
+          find scripts -name "*.lua" -exec luac5.1 -p {} +
+          luac5.1 -p modmain.lua modinfo.lua
+          echo "=== All Lua files compiled successfully without syntax errors! ==="
+
+      - name: Run Mod Test Suite (Assets, XML Atlases, KTEX, Prefabs, Nesting)
+        run: |
+          python tests/test_mod.py

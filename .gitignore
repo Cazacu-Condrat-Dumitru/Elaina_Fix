@@ -1,0 +1,18 @@
+# System and temporary files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Scratch and build artifacts
+scratch/
+*.tmp
+*.log
+.system_generated/

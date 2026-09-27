@@ -1,0 +1,10 @@
+<Atlas>
+	<Texture filename="elena.tex" />
+    <Elements>
+        <Element name="elena_broom.tex" u1="0" u2="0.25" v1="0.75" v2="1" />
+        <Element name="elena_hat.tex" u1="0.25" u2="0.5" v1="0.75" v2="1" />
+        <Element name="elena_magic.tex" u1="0.5" u2="0.75" v1="0.75" v2="1" />
+        <Element name="elena_magicstar.tex" u1="0.5" u2="0.75" v1="0.75" v2="1" />
+        <Element name="yln_house.tex" u1="0" u2="0.25" v1="0.5" v2="0.75" />
+    </Elements>
+</Atlas>
