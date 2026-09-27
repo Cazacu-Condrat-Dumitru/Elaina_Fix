@@ -16,11 +16,6 @@ local function onequip(inst, owner)
     if inst.components.container then
         inst.components.container:Open(owner)
     end
-
-    -- Enable hands-free starlight illumination while equipped
-    if inst.Light then
-        inst.Light:Enable(true)
-    end
 end
 
 local function onunequip(inst, owner)
@@ -35,11 +30,6 @@ local function onunequip(inst, owner)
         if inst.components.container then
             inst.components.container:Close(owner)
         end
-    end
-
-    -- Turn off light when removed or dropped
-    if inst.Light then
-        inst.Light:Enable(false)
     end
 end
 
@@ -102,14 +92,6 @@ local function fn(Sim)
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-
-    -- Starlight crystal illumination
-    local light = inst.entity:AddLight()
-    light:Enable(false)
-    light:SetRadius(2.5)
-    light:SetFalloff(0.7)
-    light:SetIntensity(0.75)
-    light:SetColour(220 / 255, 205 / 255, 255 / 255)
 
     MakeInventoryPhysics(inst)
 

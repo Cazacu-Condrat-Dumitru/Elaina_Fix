@@ -480,8 +480,25 @@ class TestRuntimeSafetyAndSpawnCalls(unittest.TestCase):
         self.assertIn("ui_krampusbag_2x8", pack_code, "elena_pack must use ui_krampusbag_2x8 for 14 slots")
         self.assertIn("ui_krampusbag_2x5", pack_code, "elena_pack must support ui_krampusbag_2x5 for 10 slots")
         self.assertIn("ui_backpack_2x4", pack_code, "elena_pack must support ui_backpack_2x4 for 8 slots")
+        self.assertNotIn("AddLight", pack_code, "elena_pack must not emit light")
 
+    def test_hoki_no_unsafe_droptarget(self):
+        """Ensure DropTarget is never called, as it does not exist in DS Singleplayer."""
+        hoki_path = os.path.join(REPO_ROOT, "scripts", "prefabs", "hoki.lua")
+        with open(hoki_path, "r", encoding="utf-8") as f:
+            code = f.read()
+
+        self.assertNotIn("DropTarget", code, "DropTarget method does not exist in Don't Starve Singleplayer and must not be used!")
+
+    def test_elena_does_not_spawn_with_elena_pack(self):
+        """Elaina should not start with elena_pack; it must be crafted from the Survival tab."""
+        elena_path = os.path.join(REPO_ROOT, "scripts", "prefabs", "elena.lua")
+        with open(elena_path, "r", encoding="utf-8") as f:
+            code = f.read()
+
+        self.assertNotIn('SpawnPrefab("elena_pack")', code, "elena.lua should not automatically grant elena_pack on spawn")
 
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+

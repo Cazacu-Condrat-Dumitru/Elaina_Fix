@@ -69,11 +69,10 @@ In the light novel and anime, Elaina develops a magical spell that temporarily b
 
 ### 4. Traveler's Warded Pack (elena_pack)
 - **14-Slot Grand Capacity (Krampus Sack Size)**: Fitted with a spacious 14-slot inventory (7x2 grid) using vanilla container frames, allowing Elaina to transport abundant spell reagents, collected flora, and survival provisions. Configurable in settings (8, 10, or 14 slots).
-- **75% Defensive Ward**: Woven with starlight wards, providing 75% physical damage reduction without needing bulky wooden or marble armor.
-- **Hands-Free Starlight Illumination**: Emits a soft celestial glow while equipped on the body, freeing both hands for weapons or broom flight at night.
+- **75% Defensive Ward**: Woven with protective wards, providing 75% physical damage reduction without needing bulky wooden or marble armor.
 - **Food Preservation**: Features magical cooling that halves food and ingredient spoilage rate (acting as an enchanted travel cooler).
 - **Thermal & Weather Insulation**: Protects against hypothermia in winter and overheating in summer, plus 50% water resistance.
-- **Craftable & Starter Gear**: Elaina starts with her satchel, and can re-craft it from the Survival tab with basic materials (grass, twigs, rope).
+- **Craftable Survival Satchel**: Can be crafted from the Survival tab with basic materials (4 cut grass, 4 twigs, 1 rope) without needing research stations.
 
 ### 5. Defensive Magic & Flight Utility
 - **Gale Repulsion (Hotkey: `Z`)**: Releases a concussive burst of starlight wind that repels nearby aggressive enemies up to 7 units away, staggering attackers and creating breathing room.

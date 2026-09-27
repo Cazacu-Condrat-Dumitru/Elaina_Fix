@@ -83,7 +83,11 @@ local function SetMode(inst, mode_id)
         end
     elseif mode_id == "passive" then
         if inst.components.combat then
-            inst.components.combat:DropTarget()
+            if inst.components.combat.GiveUp then
+                inst.components.combat:GiveUp()
+            else
+                inst.components.combat:SetTarget(nil)
+            end
             inst.components.combat:SetRange(6, 8)
             inst.components.combat:SetAttackPeriod(2.0)
         end
