@@ -15,7 +15,7 @@ This repository contains a full English localization, extensive bug fixes, moder
 ## Background and Attribution
 
 - **Original Character & Story**: Created by **Jougi Shiraishi** with original illustrations by **Azure** (*SB Creative / GA Novel*).
-- **Original Mod Creator**: Originally created by **lk** for the Don't Starve community.
+- **Original Mod Creator**: Originally created by **lk** for the Don't Starve community on the Steam Workshop ([Original Steam Mod #3604181203](https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203&tscn=1790467654)).
 - **This Enhanced Version**: Maintained by the community as an open-source project. Code and assets have been cleaned, translated into English, re-balanced, and extended with lore-accurate gameplay features. Note: Hoki currently uses the original character model with customized pink hair, custom portraits, and minimap icons; dedicated custom models and level-based visual updates will be created in future releases.
 
 ---

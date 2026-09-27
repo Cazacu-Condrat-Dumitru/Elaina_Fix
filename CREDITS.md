@@ -8,7 +8,7 @@ This project is an open-source enhancement and preservation effort of the origin
 - **C2C Animation Studio** - Creators of the *Wandering Witch: The Journey of Elaina* anime television adaptation.
 
 ### Original Mod Creation
-- **lk** - Original mod creator who first adapted Elaina into Don't Starve on the Steam Workshop ([Original Mod Page](https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203)).
+- **lk** - Original mod creator who first adapted Elaina into Don't Starve on the Steam Workshop ([Original Mod Page](https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203&tscn=1790467654)).
 
 ### Open-Source Localization and Expansion
 - **English Translation and Localization**: Complete translation of all code comments, character speech, item descriptions, and configuration options.

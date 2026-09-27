@@ -2,7 +2,7 @@ name = "Elaina"
 description = "Elaina - The Wandering Witch (Majo no Tabitabi)\n\nBugfix & English Translation version."
 author = "lk"
 version = "1.0"
-forumthread = "https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203"
+forumthread = "https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203&tscn=1790467654"
 api_version = 6
 dont_starve_compatible = true
 reign_of_giants_compatible = true
