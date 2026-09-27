@@ -93,7 +93,8 @@ Assets = {
 PrefabFiles = {
     "elena", "elena_broom", "elena_hat", "elena_magicstar", "potion_magic",
     "potion_icepowder", "potion_soar", "potion_sourceliquid", "pumpkin_light",
-    "book_ancientmagic", "blackcat_fish", "blackcat2", "light_projectile", "hoki"
+    "book_ancientmagic", "blackcat_fish", "blackcat2", "light_projectile", "hoki",
+    "elena_pack"
 }
 
 local IsDLC1 = GLOBAL.IsDLCEnabled(GLOBAL.REIGN_OF_GIANTS)
@@ -173,6 +174,14 @@ potion_icepowder_rec.image = "potion_icepowder.tex"
 local potion_soar_rec = Recipe("potion_soar", {Ingredient("feather_robin", 2), Ingredient("honey", 2), Ingredient("papyrus", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, nil, nil, true)
 potion_soar_rec.atlas = "images/inventoryimages/potions.xml"
 potion_soar_rec.image = "potion_soar.tex"
+
+-- Traveler's Warded Pack (75% armor, starlight, cooling/warming charm)
+GLOBAL.STRINGS.NAMES.ELENA_PACK = "Traveler's Warded Pack"
+GLOBAL.STRINGS.RECIPE_DESC.ELENA_PACK = "An enchanted satchel offering 75% defense, cooling, and starlight."
+GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.ELENA_PACK = "A witch's enchanted travel satchel with magical protection."
+local elena_pack_rec = Recipe("elena_pack", {Ingredient("cutgrass", 4), Ingredient("twigs", 4), Ingredient("rope", 1)}, RECIPETABS.SURVIVAL, TECH.NONE)
+elena_pack_rec.atlas = "images/inventoryimages.xml"
+elena_pack_rec.image = "backpack.tex"
 
 GLOBAL.STRINGS.NAMES.BOOK_ANCIENTMAGIC = "Ancient Grimoire"
 GLOBAL.STRINGS.RECIPE_DESC.BOOK_ANCIENTMAGIC = "This book..."

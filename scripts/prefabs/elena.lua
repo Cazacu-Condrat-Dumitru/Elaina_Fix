@@ -621,6 +621,12 @@ local fn = function(inst)
                 if book then inst.components.inventory:GiveItem(book) end
             end
 
+            -- Guarantee traveler's warded pack
+            if not inst.components.inventory:Has("elena_pack", 1) and not (inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY).prefab == "elena_pack") then
+                local pack = _G.SpawnPrefab("elena_pack")
+                if pack then inst.components.inventory:GiveItem(pack) end
+            end
+
             -- Guarantee broom if start mode is broom
             if (TUNING.HOKI_START_MODE or "broom") ~= "hoki" then
                 if not inst.components.inventory:Has("elena_broom", 1) and not (inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS).prefab == "elena_broom") then
