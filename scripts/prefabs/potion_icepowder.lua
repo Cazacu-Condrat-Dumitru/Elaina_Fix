@@ -75,8 +75,30 @@ local function oneaten(inst, eater)
         end
     end
 
-    -- local heju = eater:DoPeriodicTask(3, function()  eater.components.health:DoDelta(5)  eater.components.sanity:DoDelta(5) end)
-    -- heju.limit = 12
+    if eater and eater:IsValid() then
+        local x, y, z = eater.Transform:GetWorldPosition()
+        local ents = _G.TheSim:FindEntities(x, y, z, 12, {"_combat"}, {"player", "companion", "INLIMBO"})
+        for _, target in ipairs(ents) do
+            if target:IsValid() and target.components.freezable then
+                target.components.freezable:AddColdness(4)
+                target.components.freezable:SpawnShatterFX()
+            end
+            if target:IsValid() and target.components.sleeper and target.components.sleeper:IsAsleep() then
+                target.components.sleeper:WakeUp()
+            end
+            if target:IsValid() and target.components.burnable and target.components.burnable:IsBurning() then
+                target.components.burnable:Extinguish()
+            end
+        end
+
+        if eater.SoundEmitter then
+            eater.SoundEmitter:PlaySound("dontstarve/common/gem_shatter")
+        end
+
+        if eater.components.talker then
+            eater.components.talker:Say("Frost Nova unleashed!")
+        end
+    end
 end
 
 -- local id = "USE"

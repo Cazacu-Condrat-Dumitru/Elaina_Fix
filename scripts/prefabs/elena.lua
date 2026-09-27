@@ -68,6 +68,11 @@ local function StopFlight(inst, reason)
         inst.flight_fx_task = nil
     end
 
+    if inst.flight_magnet_task then
+        inst.flight_magnet_task:Cancel()
+        inst.flight_magnet_task = nil
+    end
+
     -- Restore normal character physics
     if ChangeToCharacterPhysics then
         ChangeToCharacterPhysics(inst)
@@ -107,6 +112,47 @@ local function StopFlight(inst, reason)
             inst.components.talker:Say(reason)
         else
             inst.components.talker:Say("A graceful landing.")
+        end
+    end
+end
+
+local function DoGaleRepulsion(inst)
+    if not (inst and inst:IsValid()) then return end
+    local x, y, z = inst.Transform:GetWorldPosition()
+
+    local fx = _G.SpawnPrefab("sparks_fx")
+    if fx then fx.Transform:SetPosition(x, y, z) end
+
+    if inst.SoundEmitter then
+        inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spell/wind_cast")
+    end
+
+    local enemies = _G.TheSim:FindEntities(x, y, z, 8, {"_combat"}, {"player", "companion", "INLIMBO"})
+    for _, enemy in ipairs(enemies) do
+        if enemy:IsValid() and enemy.components.combat and not enemy:HasTag("companion") and not enemy:HasTag("player") then
+            local ex, ey, ez = enemy.Transform:GetWorldPosition()
+            local dx = ex - x
+            local dz = ez - z
+            local dist = math.sqrt(dx * dx + dz * dz)
+            if dist > 0 then
+                local push_dist = math.max(2.5, 7.0 - dist)
+                local nx = ex + (dx / dist) * push_dist
+                local nz = ez + (dz / dist) * push_dist
+                if enemy.Transform then
+                    enemy.Transform:SetPosition(nx, ey, nz)
+                end
+            end
+
+            if enemy.components.locomotor then
+                enemy.components.locomotor:Stop()
+            end
+
+            if enemy.components.combat then
+                enemy.components.combat:GetAttacked(inst, 25)
+            end
+
+            local enemy_fx = _G.SpawnPrefab("sparks_fx")
+            if enemy_fx then enemy_fx.Transform:SetPosition(ex, ey, ez) end
         end
     end
 end
@@ -219,6 +265,28 @@ local function StartFlight(inst)
         local fx = _G.SpawnPrefab("sparks_fx")
         if fx then
             fx.Transform:SetPosition(x + (math.random() - 0.5) * 0.4, 0.2, z + (math.random() - 0.5) * 0.4)
+        end
+    end)
+
+    -- Resource Magnetism during flight: vacuums ground resources directly into inventory/pack
+    inst.flight_magnet_task = inst:DoPeriodicTask(0.5, function()
+        if not inst.is_flying then return end
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local ents = _G.TheSim:FindEntities(x, y, z, 5, {"_inventoryitem"}, {"INLIMBO", "catchable", "irreplaceable"})
+        for _, item in ipairs(ents) do
+            if item:IsValid() and item.components.inventoryitem and not item.components.inventoryitem:IsHeld() and item.components.inventoryitem.canbepickedup then
+                if inst.components.inventory and not inst.components.inventory:IsFull() then
+                    inst.components.inventory:GiveItem(item)
+                    if inst.SoundEmitter then
+                        inst.SoundEmitter:PlaySound("dontstarve/HUD/collect_resource")
+                    end
+                elseif inst.components.inventory and inst.components.inventory:GetOverflow() and inst.components.inventory:GetOverflow().components.container and not inst.components.inventory:GetOverflow().components.container:IsFull() then
+                    inst.components.inventory:GetOverflow().components.container:GiveItem(item)
+                    if inst.SoundEmitter then
+                        inst.SoundEmitter:PlaySound("dontstarve/HUD/collect_resource")
+                    end
+                end
+            end
         end
     end)
 
@@ -486,6 +554,38 @@ local fn = function(inst)
     end)
 
     inst.components.health:SetMaxHealth(TUNING.ELENA_HEALTH)
+    inst.components.health:SetMinHealth(1)
+    inst.DoGaleRepulsion = DoGaleRepulsion
+
+    -- Mana Barrier: Emergency Ward against lethal hit
+    inst:ListenForEvent("minhealth", function(inst, data)
+        if not inst.mana_barrier_cooldown and not (inst.components.health and inst.components.health:IsDead()) then
+            inst.mana_barrier_cooldown = true
+            inst.components.health:SetMinHealth(0)
+            inst.components.health:DoDelta(25)
+
+            local fx = _G.SpawnPrefab("statue_transition") or _G.SpawnPrefab("sparks_fx")
+            if fx then fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) end
+
+            if inst.DoGaleRepulsion then
+                inst:DoGaleRepulsion()
+            end
+
+            if inst.components.talker then
+                inst.components.talker:Say("Mana Barrier triggered! That was far too close...")
+            end
+
+            inst:DoTaskInTime(180, function()
+                if inst:IsValid() and inst.components.health and not inst.components.health:IsDead() then
+                    inst.mana_barrier_cooldown = false
+                    inst.components.health:SetMinHealth(1)
+                    if inst.components.talker then
+                        inst.components.talker:Say("Mana Barrier has restored its protective ward.")
+                    end
+                end
+            end)
+        end
+    end)
     inst.components.hunger:SetMax(TUNING.ELENA_HUNGER)
     inst.components.hunger.hungerrate = TUNING.WILSON_HUNGER_RATE
     inst.components.sanity:SetMax(TUNING.ELENA_SANITY)
@@ -575,7 +675,28 @@ local fn = function(inst)
                 local lvl = inst.components.level.level
                 local flight_info = (lvl >= 10) and " | [R] Fly" or " | [R] Fly (Lvl 10)"
                 inst.components.talker:Say("Level: " .. lvl .. " | EXP: " ..
-                                               math.floor(inst.components.level.exp) .. "/" .. needsexp .. flight_info)
+                                               math.floor(inst.components.level.exp) .. "/" .. needsexp .. flight_info .. " | [Z] Gale")
+            end
+        end)
+
+        -- Gale Repulsion defensive burst hotkey: Z
+        local key_z = rawget(_G, "KEY_Z") or 122
+        input:AddKeyUpHandler(key_z, function()
+            if not inst:IsValid() or inst:HasTag("playerghost") or (inst.components.health and inst.components.health:IsDead()) then
+                return
+            end
+            local current_time = _G.GetTime and _G.GetTime() or 0
+            if inst.gale_repulsion_cooldown and current_time < inst.gale_repulsion_cooldown then
+                local wait = math.max(1, math.ceil(inst.gale_repulsion_cooldown - current_time))
+                inst.components.talker:Say("Gale spell recharging... (" .. wait .. "s)")
+                return
+            end
+            inst.gale_repulsion_cooldown = current_time + 12
+            if inst.DoGaleRepulsion then
+                inst:DoGaleRepulsion()
+            end
+            if inst.components.talker then
+                inst.components.talker:Say("Gale Repulsion!")
             end
         end)
     end
