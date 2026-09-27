@@ -131,6 +131,10 @@ class TestModInfoAndConfiguration(unittest.TestCase):
         self.assertIn("hoki_command_key", self.content, "modinfo.lua must have hoki_command_key setting")
         self.assertIn("hoki_start", self.content, "modinfo.lua must have hoki_start setting")
 
+    def test_pack_size_configuration(self):
+        self.assertIn("pack_size", self.content, "modinfo.lua must have pack_size setting")
+        self.assertIn("14 Slots (Default)", self.content, "modinfo.lua pack_size must offer 14 Slots default")
+
 
 class TestPrefabAndAssetIntegrity(unittest.TestCase):
     """Ensures all prefabs and assets registered in modmain.lua actually exist on disk."""
@@ -465,6 +469,18 @@ class TestRuntimeSafetyAndSpawnCalls(unittest.TestCase):
                 found,
                 f"Prefab '{prefab}' declared in PrefabFiles should have STRINGS.NAMES.{upper_name} defined in modmain.lua"
             )
+
+    def test_elena_pack_layout_definitions(self):
+        """Ensure elena_pack defines valid container configurations for 8, 10, and 14 slots."""
+        pack_path = os.path.join(REPO_ROOT, "scripts", "prefabs", "elena_pack.lua")
+        self.assertTrue(os.path.isfile(pack_path), "elena_pack.lua must exist")
+        with open(pack_path, "r", encoding="utf-8") as f:
+            pack_code = f.read()
+
+        self.assertIn("ui_krampusbag_2x8", pack_code, "elena_pack must use ui_krampusbag_2x8 for 14 slots")
+        self.assertIn("ui_krampusbag_2x5", pack_code, "elena_pack must support ui_krampusbag_2x5 for 10 slots")
+        self.assertIn("ui_backpack_2x4", pack_code, "elena_pack must support ui_backpack_2x4 for 8 slots")
+
 
 
 if __name__ == '__main__':

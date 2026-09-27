@@ -24,6 +24,7 @@ Version 1.0 Update Log:
    - Created full open-source GitHub documentation (README.md, CREDITS.md, .gitignore).
 
 6. Traveler's Warded Pack (elena_pack):
+   - Expanded container capacity to 14 slots (Krampus Sack size) with configurable settings (8, 10, or 14 slots).
    - Signature enchanted backpack with 75% defense absorption, hands-free starlight illumination, food preservation (fridge effect), and weather insulation against freezing/overheating.
 
 7. Gale Repulsion Defense:

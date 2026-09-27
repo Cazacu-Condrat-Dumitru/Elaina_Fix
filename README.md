@@ -68,6 +68,7 @@ In the light novel and anime, Elaina develops a magical spell that temporarily b
   - Speaks genuine, cheerful, and polite quotes calling Elaina *"Lady Elaina"*, playfully teasing her when summoned for *"an extra pair of hands"*, and reminding her to eat sweets when hungry.
 
 ### 4. Traveler's Warded Pack (elena_pack)
+- **14-Slot Grand Capacity (Krampus Sack Size)**: Fitted with a spacious 14-slot inventory (7x2 grid) using vanilla container frames, allowing Elaina to transport abundant spell reagents, collected flora, and survival provisions. Configurable in settings (8, 10, or 14 slots).
 - **75% Defensive Ward**: Woven with starlight wards, providing 75% physical damage reduction without needing bulky wooden or marble armor.
 - **Hands-Free Starlight Illumination**: Emits a soft celestial glow while equipped on the body, freeing both hands for weapons or broom flight at night.
 - **Food Preservation**: Features magical cooling that halves food and ingredient spoilage rate (acting as an enchanted travel cooler).
@@ -100,6 +101,8 @@ All settings use concise labels designed specifically to fit neatly inside Don't
 | **Hoki Max Health** | `150`, `250`, `400`, `600` | `250` | Base health of Hoki companion |
 | **Hoki Magic Damage**| `20`, `34`, `50`, `68` | `34` | Ranged magical projectile attack damage |
 | **Hoki Sanity Aura** | `0`, `+2.4/m`, `+5.0/m`, `+10.0/m` | `+5.0/m` | Passive sanity restoration near Hoki |
+| **Hoki Command Key** | `V`, `Z`, `X`, `C`, `B`, `G`, `H`, `J`, `K` | `V` | Keyboard hotkey for companion commands |
+| **Satchel Slots** | `8 Slots`, `10 Slots`, `14 Slots` | `14 Slots` | Storage capacity of the Traveler Pack |
 
 ---
 

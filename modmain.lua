@@ -37,6 +37,7 @@ TUNING.HOKI_HEALTH = GetModConfigData("hoki_health") or 250
 TUNING.HOKI_DAMAGE = GetModConfigData("hoki_damage") or 34
 TUNING.HOKI_SANITY_AURA = GetModConfigData("hoki_sanity_aura") or 5.0
 TUNING.HOKI_COMMAND_KEY = GetModConfigData("hoki_command_key") or "KEY_V"
+TUNING.ELENA_PACK_SLOTS = GetModConfigData("pack_size") or 14
 
 TUNING.BROOM_RANGE = 1
 TUNING.ELENA_HUNGER = 150

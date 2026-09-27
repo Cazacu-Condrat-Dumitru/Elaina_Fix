@@ -55,10 +55,45 @@ local function onclose(inst)
     end
 end
 
-local slotpos = {}
-for y = 0, 3 do
-    table.insert(slotpos, Vector3(-162, -y * 75 + 114, 0))
-    table.insert(slotpos, Vector3(-162 + 75, -y * 75 + 114, 0))
+local function get_container_layout()
+    local slots_count = (TUNING and TUNING.ELENA_PACK_SLOTS) or 14
+    local slotpos = {}
+
+    if slots_count == 8 then
+        for y = 0, 3 do
+            table.insert(slotpos, Vector3(-162, -y * 75 + 114, 0))
+            table.insert(slotpos, Vector3(-162 + 75, -y * 75 + 114, 0))
+        end
+        return {
+            slotpos = slotpos,
+            animbank = "ui_backpack_2x4",
+            animbuild = "ui_backpack_2x4",
+            pos = Vector3(-5, -50, 0),
+        }
+    elseif slots_count == 10 then
+        for y = 0, 4 do
+            table.insert(slotpos, Vector3(-162, -y * 75 + 114, 0))
+            table.insert(slotpos, Vector3(-162 + 75, -y * 75 + 114, 0))
+        end
+        return {
+            slotpos = slotpos,
+            animbank = "ui_krampusbag_2x5",
+            animbuild = "ui_krampusbag_2x5",
+            pos = Vector3(-5, -70, 0),
+        }
+    else
+        -- Default: 14 slots (matching Krampus Sack layout)
+        for y = 0, 6 do
+            table.insert(slotpos, Vector3(-162, -y * 75 + 240, 0))
+            table.insert(slotpos, Vector3(-162 + 75, -y * 75 + 240, 0))
+        end
+        return {
+            slotpos = slotpos,
+            animbank = "ui_krampusbag_2x8",
+            animbuild = "ui_krampusbag_2x8",
+            pos = Vector3(-5, -75, 0),
+        }
+    end
 end
 
 local function fn(Sim)
@@ -116,12 +151,14 @@ local function fn(Sim)
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
+    local layout = get_container_layout()
+
     inst:AddComponent("container")
-    inst.components.container:SetNumSlots(#slotpos)
-    inst.components.container.widgetslotpos = slotpos
-    inst.components.container.widgetanimbank = "ui_backpack_2x4"
-    inst.components.container.widgetanimbuild = "ui_backpack_2x4"
-    inst.components.container.widgetpos = Vector3(-5, -50, 0)
+    inst.components.container:SetNumSlots(#layout.slotpos)
+    inst.components.container.widgetslotpos = layout.slotpos
+    inst.components.container.widgetanimbank = layout.animbank
+    inst.components.container.widgetanimbuild = layout.animbuild
+    inst.components.container.widgetpos = layout.pos
     inst.components.container.side_widget = true
     inst.components.container.type = "pack"
     inst.components.container.onopenfn = onopen

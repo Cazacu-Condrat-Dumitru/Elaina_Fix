@@ -176,4 +176,15 @@ configuration_options = {
         },
         default = "KEY_V",
     },
-}
+    {
+        name = "pack_size",
+        label = "Satchel Slots",
+        hover = "Storage capacity of Elaina's Traveler Warded Pack.",
+        options = {
+            {description = "8 Slots", data = 8},
+            {description = "10 Slots", data = 10},
+            {description = "14 Slots (Default)", data = 14},
+        },
+        default = 14,
+    },
+}
