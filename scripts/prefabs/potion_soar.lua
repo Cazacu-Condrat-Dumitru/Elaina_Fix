@@ -1,3 +1,5 @@
+local U = require "elena_util"
+
 local assets=
 {
 	Asset("ANIM", "anim/potion_soar.zip"),
@@ -14,8 +16,8 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")  
     
     MakeInventoryPhysics(inst)
+    U.MakeFloatable(inst)
 
-    MakeInventoryFloatable(inst, "idle_water", "idle")
     
     inst:AddTag("catfood")
 

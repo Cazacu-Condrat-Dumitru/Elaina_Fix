@@ -12,7 +12,7 @@ This project is an open-source enhancement and preservation effort of the origin
 
 ### Open-Source Localization and Expansion
 - **English Translation and Localization**: Complete translation of all code comments, character speech, item descriptions, and configuration options.
-- **Visuals and Art Assets**: Custom inventory, map icons, and portraits for Hoki (Broom-san) matching her light novel pink hair design. (Currently utilizing the original character model with customized pink hair; dedicated new models and visual stage evolutions across levels are planned for future updates).
-- **Hoki Companion System**: Dual-form transformation system, autonomous ranged magic AI, sweets and potions upgrade mechanics, and progressive power scaling.
-- **Broom Flight System**: Level 10+ aerial gliding mechanics, speed boosts, water traversal, and custom particle effects.
+- **Elaina's Voice**: Character speech written for Elaina's personality, replacing the borrowed Wendy lines.
+- **Broom Flight System**: Level 10+ flight over obstacles and creatures, speed boost and particle effects.
+- **Witch Magic**: Gale Repulsion, Mana Barrier, Frost Nova, and the daily Grimoire meditation.
 - **Code Maintenance**: Full code cleanup, non-ASCII font sanitization, and compatibility fixes across Reign of Giants, Shipwrecked, and Hamlet.

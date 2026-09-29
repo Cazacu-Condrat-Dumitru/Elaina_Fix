@@ -1,7 +1,7 @@
 name = "Elaina"
-description = "Elaina - The Wandering Witch (Majo no Tabitabi)\n\nBugfix & English Translation version."
+description = "Elaina - The Wandering Witch (Majo no Tabitabi)\n\nBugfix, balance & English translation.\n[R] Fly (Lvl 10)  [Z] Gale  [L] Status"
 author = "lk"
-version = "1.0"
+version = "1.1"
 forumthread = "https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203&tscn=1790467654"
 api_version = 6
 dont_starve_compatible = true
@@ -29,37 +29,48 @@ configuration_options = {
     {
         name = "broom_damage",
         label = "Broom Damage",
-        hover = "Base melee damage of Elaina's Broom.",
+        hover = "Melee damage of the Witch's Broom (it's for flying, not fighting).",
         options = {
-            {description = "34", data = 34},
-            {description = "50", data = 50},
-            {description = "68", data = 68},
-            {description = "100", data = 100},
-        },
-        default = 50,
-    },
-    {
-        name = "wand_damage",
-        label = "Wand Damage",
-        hover = "Ranged projectile damage of Elaina's Magic Wand.",
-        options = {
+            {description = "17", data = 17},
             {description = "25", data = 25},
-            {description = "34", data = 34},
-            {description = "50", data = 50},
-            {description = "68", data = 68},
-            {description = "100", data = 100},
+            {description = "34 (Spear)", data = 34},
+            {description = "50 (Original)", data = 50},
         },
         default = 34,
     },
     {
+        name = "wand_damage",
+        label = "Wand Damage",
+        hover = "Damage of each Magic Wand star bolt.",
+        options = {
+            {description = "20", data = 20},
+            {description = "25 (Original)", data = 25},
+            {description = "34", data = 34},
+            {description = "50", data = 50},
+        },
+        default = 25,
+    },
+    {
+        name = "wand_sanity_cost",
+        label = "Wand Focus Cost",
+        hover = "Sanity spent for each Magic Wand bolt that hits.",
+        options = {
+            {description = "0 (Free)", data = 0},
+            {description = "0.5", data = 0.5},
+            {description = "1", data = 1},
+            {description = "2", data = 2},
+        },
+        default = 1,
+    },
+    {
         name = "hat_waterproof",
         label = "Hat Waterproof",
-        hover = "Water resistance percentage granted by Elaina's Hat.",
+        hover = "Water resistance granted by Elaina's Hat.",
         options = {
+            {description = "35%", data = 0.35},
             {description = "50%", data = 0.5},
             {description = "70%", data = 0.7},
-            {description = "90%", data = 0.9},
-            {description = "100%", data = 1.0},
+            {description = "100% (Original)", data = 1.0},
         },
         default = 1.0,
     },
@@ -69,11 +80,22 @@ configuration_options = {
         hover = "Bonus attack power gained with each level.",
         options = {
             {description = "0%", data = 0.0},
+            {description = "+0.25%", data = 0.0025},
             {description = "+0.5%", data = 0.005},
             {description = "+1.0%", data = 0.01},
-            {description = "+2.0%", data = 0.02},
         },
-        default = 0.01,
+        default = 0.005,
+    },
+    {
+        name = "stats_per_level",
+        label = "Stats / Level",
+        hover = "Max Health, Hunger and Sanity gained with each level.",
+        options = {
+            {description = "+0", data = 0},
+            {description = "+1", data = 1},
+            {description = "+2 (Original)", data = 2},
+        },
+        default = 1,
     },
     {
         name = "flight_base_duration",
@@ -100,91 +122,4 @@ configuration_options = {
         },
         default = 1.0,
     },
-    {
-        name = "broom_companion_cost",
-        label = "Broom Spell Cost",
-        hover = "Sanity cost to summon/transform the Broom Companion at Level 10.",
-        options = {
-            {description = "0", data = 0},
-            {description = "15", data = 15},
-            {description = "25", data = 25},
-            {description = "40", data = 40},
-        },
-        default = 25,
-    },
-    {
-        name = "hoki_start_mode",
-        label = "Starting Form",
-        hover = "Choose whether to begin with the Broom weapon or Hoki in person.",
-        options = {
-            {description = "Broom", data = "broom"},
-            {description = "Hoki", data = "hoki"},
-        },
-        default = "broom",
-    },
-    {
-        name = "hoki_health",
-        label = "Hoki Max Health",
-        hover = "Base health of Hoki in human companion form.",
-        options = {
-            {description = "150", data = 150},
-            {description = "250", data = 250},
-            {description = "400", data = 400},
-            {description = "600", data = 600},
-        },
-        default = 250,
-    },
-    {
-        name = "hoki_damage",
-        label = "Hoki Magic Damage",
-        hover = "Ranged magical attack damage dealt by Hoki.",
-        options = {
-            {description = "20", data = 20},
-            {description = "34", data = 34},
-            {description = "50", data = 50},
-            {description = "68", data = 68},
-        },
-        default = 34,
-    },
-    {
-        name = "hoki_sanity_aura",
-        label = "Hoki Sanity Aura",
-        hover = "Sanity restoration aura granted to Elaina when Hoki is nearby.",
-        options = {
-            {description = "0", data = 0},
-            {description = "+2.4/m", data = 2.4},
-            {description = "+5.0/m", data = 5.0},
-            {description = "+10.0/m", data = 10.0},
-        },
-        default = 5.0,
-    },
-    {
-        name = "hoki_command_key",
-        label = "Hoki Command Key",
-        hover = "Keyboard hotkey to issue commands / cycle modes for Hoki (Farm, Battle, Passive, Broom).",
-        options = {
-            {description = "V (Default)", data = "KEY_V"},
-            {description = "Z", data = "KEY_Z"},
-            {description = "X", data = "KEY_X"},
-            {description = "C", data = "KEY_C"},
-            {description = "B", data = "KEY_B"},
-            {description = "G", data = "KEY_G"},
-            {description = "H", data = "KEY_H"},
-            {description = "J", data = "KEY_J"},
-            {description = "K", data = "KEY_K"},
-            {description = "Disabled", data = "disabled"},
-        },
-        default = "KEY_V",
-    },
-    {
-        name = "pack_size",
-        label = "Satchel Slots",
-        hover = "Storage capacity of Elaina's Traveler Warded Pack.",
-        options = {
-            {description = "8 Slots", data = 8},
-            {description = "10 Slots", data = 10},
-            {description = "14 Slots (Default)", data = 14},
-        },
-        default = 14,
-    },
-}
+}

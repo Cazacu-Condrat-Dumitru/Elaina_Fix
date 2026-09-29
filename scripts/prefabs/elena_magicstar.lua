@@ -1,3 +1,5 @@
+local U = require "elena_util"
+
 local assets = {
     Asset("ANIM", "anim/elena_magic.zip"),
     Asset("ANIM", "anim/swap_elena_magic.zip"),
@@ -16,11 +18,20 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
 end
 
+-- Every bolt that lands costs a little focus (sanity): magic isn't free.
+local function onattack(inst, attacker, target, projectile)
+    local cost = TUNING.ELENA_WAND_SANITY_COST or 1
+    if cost > 0 and attacker and attacker.components.sanity then
+        attacker.components.sanity:DoDelta(-cost)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     MakeInventoryPhysics(inst)
+    U.MakeFloatable(inst)
 
     inst.AnimState:SetBank("elena_magic")
     inst.AnimState:SetBuild("elena_magic")
@@ -30,7 +41,8 @@ local function fn()
 
     inst:AddComponent("weapon")
 -- Damage taken from menu settings
-    inst.components.weapon:SetDamage(TUNING.MAGICSTAR_DAMAGE or 34)
+    inst.components.weapon:SetDamage(TUNING.MAGICSTAR_DAMAGE or 25)
+    inst.components.weapon:SetOnAttack(onattack)
     inst.components.weapon:SetRange(8, 10)
     inst.components.weapon:SetProjectile("light_projectile")
 

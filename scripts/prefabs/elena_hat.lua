@@ -1,3 +1,5 @@
+local U = require "elena_util"
+
 local assets = {
     Asset("ANIM", "anim/elena_hat.zip"),
     Asset("ANIM", "anim/swap_elena_hat.zip"),
@@ -39,6 +41,7 @@ local function fn(sim)
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     MakeInventoryPhysics(inst)
+    U.MakeFloatable(inst)
 
     inst.AnimState:SetBank("elena_hat")
     inst.AnimState:SetBuild("elena_hat")
@@ -58,8 +61,7 @@ local function fn(sim)
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
-    inst.components.equippable.insulated = true
-    inst.components.equippable.dapperness = TUNING.DAPPERNESS_LARGE
+    inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
 
     -- Configurable water resistance
     inst:AddComponent("waterproofer")

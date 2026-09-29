@@ -24,20 +24,15 @@ local Text = GLOBAL.require('widgets/text')
 local Badge = GLOBAL.require("widgets/badge")
 
 -- Retrieve configuration options from mod settings
-TUNING.BROOM_DAMAGE = GetModConfigData("broom_damage") or 50
-TUNING.MAGICSTAR_DAMAGE = GetModConfigData("wand_damage") or 34
+TUNING.BROOM_DAMAGE = GetModConfigData("broom_damage") or 34
+TUNING.MAGICSTAR_DAMAGE = GetModConfigData("wand_damage") or 25
+TUNING.ELENA_WAND_SANITY_COST = GetModConfigData("wand_sanity_cost") or 1
 TUNING.ELENA_HAT_WATERPROOF = GetModConfigData("hat_waterproof") or 1.0
 TUNING.ELENA_EXP_RATE = GetModConfigData("exp_rate") or 1.0
-TUNING.ELENA_LEVEL_DAMAGE_BONUS = GetModConfigData("level_damage_bonus") or 0.01
+TUNING.ELENA_LEVEL_DAMAGE_BONUS = GetModConfigData("level_damage_bonus") or 0.005
+TUNING.ELENA_STATS_PER_LEVEL = GetModConfigData("stats_per_level") or 1
 TUNING.ELENA_FLIGHT_BASE_DURATION = GetModConfigData("flight_base_duration") or 10
 TUNING.ELENA_FLIGHT_SANITY_COST = GetModConfigData("flight_sanity_cost") or 1.0
-TUNING.ELENA_BROOM_COMPANION_COST = GetModConfigData("broom_companion_cost") or 25
-TUNING.HOKI_START_MODE = GetModConfigData("hoki_start_mode") or "broom"
-TUNING.HOKI_HEALTH = GetModConfigData("hoki_health") or 250
-TUNING.HOKI_DAMAGE = GetModConfigData("hoki_damage") or 34
-TUNING.HOKI_SANITY_AURA = GetModConfigData("hoki_sanity_aura") or 5.0
-TUNING.HOKI_COMMAND_KEY = GetModConfigData("hoki_command_key") or "KEY_V"
-TUNING.ELENA_PACK_SLOTS = GetModConfigData("pack_size") or 14
 
 TUNING.BROOM_RANGE = 1
 TUNING.ELENA_HUNGER = 150
@@ -81,21 +76,17 @@ Assets = {
     Asset("ATLAS", "images/selectscreen_portraits/elena_silho.xml"),
     Asset("ATLAS", "bigportraits/elena.xml"),
     Asset("ATLAS", "bigportraits/elena_none.xml"),
-    Asset("ATLAS", "bigportraits/hoki.xml"),
     Asset("ATLAS", "images/avatars/avatar_elena.xml"),
     Asset("ATLAS", "images/avatars/avatar_ghost_elena.xml"),
-    Asset("ATLAS", "images/avatars/avatar_hoki.xml"),
     Asset("ATLAS", "images/avatars/self_inspect_elena.xml"),
     Asset("ATLAS", "images/names_elena.xml"),
-    Asset("ATLAS", "images/map_icons/elena.xml"),
-    Asset("ATLAS", "images/map_icons/hoki.xml")
+    Asset("ATLAS", "images/map_icons/elena.xml")
 }
 
 PrefabFiles = {
     "elena", "elena_broom", "elena_hat", "elena_magicstar", "potion_magic",
     "potion_icepowder", "potion_soar", "potion_sourceliquid", "pumpkin_light",
-    "book_ancientmagic", "blackcat_fish", "blackcat2", "light_projectile", "hoki",
-    "elena_pack"
+    "book_ancientmagic", "blackcat_fish", "blackcat2", "light_projectile"
 }
 
 local IsDLC1 = GLOBAL.IsDLCEnabled(GLOBAL.REIGN_OF_GIANTS)
@@ -107,19 +98,16 @@ STRINGS.CHARACTER_TITLES.elena = "Elaina"
 STRINGS.CHARACTER_NAMES.elena = "Elaina"
 STRINGS.CHARACTER_DESCRIPTIONS.elena = "When you sigh, happiness slips away."
 STRINGS.CHARACTER_QUOTES.elena = "Seems like it's not okay after all."
-STRINGS.CHARACTERS.ELENA = require "speech_wendy"
+-- Elaina's own voice (a copy of Wendy's lines with her personality on top;
+-- a plain require would share, and overwrite, Wendy's table)
+STRINGS.CHARACTERS.ELENA = require "speech_elena"
 STRINGS.NAMES.elena = "Elaina"
 STRINGS.NAMES.ELENA = "Elaina"
 GLOBAL.STRINGS.NAMES.elena = "Elaina"
 GLOBAL.STRINGS.NAMES.ELENA = "Elaina"
 
-GLOBAL.STRINGS.NAMES.HOKI = "Hoki"
-GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOKI = "Elaina's faithful broom, awakened in human form!"
-GLOBAL.STRINGS.CHARACTERS.ELENA.DESCRIBE.HOKI = "My precious broom. Thank you for always helping me, Hoki!"
-
 AddModCharacter("elena", "FEMALE")
 AddMinimapAtlas("images/map_icons/elena.xml")
-AddMinimapAtlas("images/map_icons/hoki.xml")
 
 -- Item and Critter Strings
 GLOBAL.STRINGS.NAMES.CRITTER_KITTEN_BUILDER = "Little Kitten"
@@ -128,7 +116,7 @@ GLOBAL.STRINGS.NAMES.CRITTER_KITTEN = "Little Kitten"
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_KITTEN = "It will grow into a lovely cat girl!"
 
 GLOBAL.STRINGS.NAMES.ELENA_BROOM = "Witch's Broom"
-GLOBAL.STRINGS.RECIPE_DESC.ELENA_BROOM = "A magical flying broom."
+GLOBAL.STRINGS.RECIPE_DESC.ELENA_BROOM = "A witch's way to travel. (Fly: R, Lvl 10)"
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.ELENA_BROOM = "A witch's favorite broom."
 
 GLOBAL.STRINGS.NAMES.ELENA_HAT = "Witch's Hat"
@@ -136,7 +124,7 @@ GLOBAL.STRINGS.RECIPE_DESC.ELENA_HAT = "A hat is an essential part of the person
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.ELENA_HAT = "A classic pointed witch hat."
 
 GLOBAL.STRINGS.NAMES.ELENA_MAGICSTAR = "Magic Wand"
-GLOBAL.STRINGS.RECIPE_DESC.ELENA_MAGICSTAR = "Shoots homing magical bolts."
+GLOBAL.STRINGS.RECIPE_DESC.ELENA_MAGICSTAR = "Homing star bolts. Costs a little focus."
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.ELENA_MAGICSTAR = "Magic wand with homing star projectiles."
 
 GLOBAL.STRINGS.NAMES.PUMPKIN_LIGHT = "Witch Pumpkin Lantern"
@@ -159,33 +147,21 @@ GLOBAL.STRINGS.NAMES.POTION_SOAR = "Traveler's Potion"
 GLOBAL.STRINGS.RECIPE_DESC.POTION_SOAR = "Run swift and fast."
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.POTION_SOAR = "Grants great travel speed."
 
--- Potion Recipes in Magic Tab (Visible for inspection and previewing ingredients, locked behind Magic station)
-local potion_magic_rec = Recipe("potion_magic", {Ingredient("petals", 4), Ingredient("nightmarefuel", 1), Ingredient("blue_cap", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, nil, nil, true)
-potion_magic_rec.atlas = "images/inventoryimages/potions.xml"
-potion_magic_rec.image = "potion_magic.tex"
+-- Potion Recipes (Magic tab, must stand at a Shadow Manipulator to craft)
+local function AddPotionRecipe(name, ingredients)
+    local rec = Recipe(name, ingredients, RECIPETABS.MAGIC, TECH.MAGIC_TWO)
+    rec.nounlock = true -- set by field: SW/Hamlet insert a game_type argument before it
+    rec.atlas = "images/inventoryimages/potions.xml"
+    rec.image = name .. ".tex"
+end
 
-local potion_sourceliquid_rec = Recipe("potion_sourceliquid", {Ingredient("livinglog", 1), Ingredient("honey", 2), Ingredient("red_cap", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, nil, nil, true)
-potion_sourceliquid_rec.atlas = "images/inventoryimages/potions.xml"
-potion_sourceliquid_rec.image = "potion_sourceliquid.tex"
-
-local potion_icepowder_rec = Recipe("potion_icepowder", {Ingredient("ice", 3), Ingredient("bluegem", 1), Ingredient("butterflywings", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, nil, nil, true)
-potion_icepowder_rec.atlas = "images/inventoryimages/potions.xml"
-potion_icepowder_rec.image = "potion_icepowder.tex"
-
-local potion_soar_rec = Recipe("potion_soar", {Ingredient("feather_robin", 2), Ingredient("honey", 2), Ingredient("papyrus", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, nil, nil, true)
-potion_soar_rec.atlas = "images/inventoryimages/potions.xml"
-potion_soar_rec.image = "potion_soar.tex"
-
--- Traveler's Warded Pack (75% armor, cooling/warming charm)
-GLOBAL.STRINGS.NAMES.ELENA_PACK = "Traveler's Warded Pack"
-GLOBAL.STRINGS.RECIPE_DESC.ELENA_PACK = "An enchanted satchel offering 75% defense, cooling, and insulation."
-GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.ELENA_PACK = "A witch's enchanted travel satchel with magical protection."
-local elena_pack_rec = Recipe("elena_pack", {Ingredient("cutgrass", 4), Ingredient("twigs", 4), Ingredient("rope", 1)}, RECIPETABS.SURVIVAL, TECH.NONE)
-elena_pack_rec.atlas = "images/inventoryimages.xml"
-elena_pack_rec.image = "backpack.tex"
+AddPotionRecipe("potion_magic", {Ingredient("petals", 4), Ingredient("nightmarefuel", 1), Ingredient("blue_cap", 1)})
+AddPotionRecipe("potion_sourceliquid", {Ingredient("livinglog", 1), Ingredient("honey", 2), Ingredient("red_cap", 1)})
+AddPotionRecipe("potion_icepowder", {Ingredient("ice", 3), Ingredient("bluegem", 1), Ingredient("butterflywings", 2)})
+AddPotionRecipe("potion_soar", {Ingredient("feather_robin", 2), Ingredient("honey", 2), Ingredient("papyrus", 1)})
 
 GLOBAL.STRINGS.NAMES.BOOK_ANCIENTMAGIC = "Ancient Grimoire"
-GLOBAL.STRINGS.RECIPE_DESC.BOOK_ANCIENTMAGIC = "This book..."
+GLOBAL.STRINGS.RECIPE_DESC.BOOK_ANCIENTMAGIC = "Reading it calms the mind. Once a day."
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.BOOK_ANCIENTMAGIC = "Contains forgotten magic."
 
 GLOBAL.STRINGS.NAMES.BLACKCAT = "Black Cat"
@@ -215,9 +191,12 @@ local function P_PI(inst)
 end
 
 local function onattacked(inst, data)
-    if inst.components.follower.leader == data.attacker then
+    local follower = inst.components.follower
+    if follower and data and data.attacker and follower.leader == data.attacker then
         inst:DoTaskInTime(1, function()
-            inst.components.follower:SetLeader(data.attacker)
+            if inst:IsValid() and inst.components.follower and data.attacker:IsValid() then
+                inst.components.follower:SetLeader(data.attacker)
+            end
         end)
     end
 end

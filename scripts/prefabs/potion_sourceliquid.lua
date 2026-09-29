@@ -1,12 +1,15 @@
+local U = require "elena_util"
+
 local assets =
 {
     Asset("ANIM", "anim/potion_sourceliquid.zip"),
     Asset("ATLAS", "images/inventoryimages/potions.xml"), Asset("IMAGE", "images/inventoryimages/potions.tex") 
 }
 
+-- Restores 5 health and 5 sanity every 3 seconds, 12 times.
+-- Safe for any eater: pigs and birds have no sanity component.
 local function oneaten(inst, eater)
-	local heju = eater:DoPeriodicTask(3, function()  eater.components.health:DoDelta(5)  eater.components.sanity:DoDelta(5) end)
-	heju.limit = 12
+    U.StartRegen(eater, "elena_source_regen", 3, 12, 5, 5)
 end
 
 local function fn(Sim)
@@ -15,6 +18,7 @@ local function fn(Sim)
 	inst.entity:AddAnimState()
     
     MakeInventoryPhysics(inst)
+    U.MakeFloatable(inst)
     
     inst.AnimState:SetBank("potion_sourceliquid")
     inst.AnimState:SetBuild("potion_sourceliquid")

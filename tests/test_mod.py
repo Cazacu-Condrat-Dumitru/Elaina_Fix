@@ -128,12 +128,21 @@ class TestModInfoAndConfiguration(unittest.TestCase):
 
     def test_configuration_options_syntax(self):
         self.assertIn("configuration_options", self.content, "modinfo.lua must define configuration_options")
-        self.assertIn("hoki_command_key", self.content, "modinfo.lua must have hoki_command_key setting")
-        self.assertIn("hoki_start", self.content, "modinfo.lua must have hoki_start setting")
+        self.assertIn("wand_sanity_cost", self.content, "modinfo.lua must have wand_sanity_cost setting")
+        self.assertIn("stats_per_level", self.content, "modinfo.lua must have stats_per_level setting")
 
-    def test_pack_size_configuration(self):
-        self.assertIn("pack_size", self.content, "modinfo.lua must have pack_size setting")
-        self.assertIn("14 Slots (Default)", self.content, "modinfo.lua pack_size must offer 14 Slots default")
+    def test_removed_features_have_no_options(self):
+        """Hoki and the Traveler's Pack are disabled until they have their own models."""
+        for name in ("hoki_", "pack_size", "broom_companion_cost"):
+            self.assertNotIn(name, self.content, f"modinfo.lua still has a '{name}' option for a removed feature")
+
+    def test_every_default_is_an_option(self):
+        """A default that isn't one of the options shows a blank entry in the mods menu."""
+        blocks = re.findall(r'options\s*=\s*\{(.*?)\n\s*\},\s*default\s*=\s*([^,\n]+)', self.content, re.S)
+        self.assertTrue(blocks, "could not parse configuration options")
+        for body, default in blocks:
+            values = [v.strip() for v in re.findall(r'data\s*=\s*([^}]+)\}', body)]
+            self.assertIn(default.strip(), values, f"default {default.strip()} is not one of {values}")
 
 
 class TestPrefabAndAssetIntegrity(unittest.TestCase):
@@ -405,7 +414,7 @@ class TestRuntimeSafetyAndSpawnCalls(unittest.TestCase):
 
         vanilla_prefabs = {
             "sparks_fx", "statue_transition", "impact", "critter_kitten",
-            "cane_ancient_fx", "cane_victorian_fx", "shatter"
+            "cane_ancient_fx", "cane_victorian_fx", "shatter", "statue_transition_2"
         }
         known_prefabs = mod_prefabs | vanilla_prefabs
 
@@ -470,33 +479,68 @@ class TestRuntimeSafetyAndSpawnCalls(unittest.TestCase):
                 f"Prefab '{prefab}' declared in PrefabFiles should have STRINGS.NAMES.{upper_name} defined in modmain.lua"
             )
 
-    def test_elena_pack_layout_definitions(self):
-        """Ensure elena_pack defines valid container configurations for 8, 10, and 14 slots."""
-        pack_path = os.path.join(REPO_ROOT, "scripts", "prefabs", "elena_pack.lua")
-        self.assertTrue(os.path.isfile(pack_path), "elena_pack.lua must exist")
-        with open(pack_path, "r", encoding="utf-8") as f:
-            pack_code = f.read()
+    def _all_mod_lua(self):
+        for root, _, files in os.walk(REPO_ROOT):
+            if '.git' in root or 'scratch' in root or 'tests' in root:
+                continue
+            for f in files:
+                if f.endswith('.lua'):
+                    fpath = os.path.join(root, f)
+                    with open(fpath, 'r', encoding='utf-8', errors='ignore') as fp:
+                        yield os.path.relpath(fpath, REPO_ROOT), fp.read()
 
-        self.assertIn("ui_krampusbag_2x8", pack_code, "elena_pack must use ui_krampusbag_2x8 for 14 slots")
-        self.assertIn("ui_krampusbag_2x5", pack_code, "elena_pack must support ui_krampusbag_2x5 for 10 slots")
-        self.assertIn("ui_backpack_2x4", pack_code, "elena_pack must support ui_backpack_2x4 for 8 slots")
-        self.assertNotIn("AddLight", pack_code, "elena_pack must not emit light")
+    def test_removed_features_are_gone(self):
+        """Hoki and the Traveler's Pack must not be registered or spawned anywhere."""
+        for name in ("hoki.lua", "elena_pack.lua"):
+            self.assertFalse(os.path.isfile(os.path.join(REPO_ROOT, "scripts", "prefabs", name)), f"{name} should be removed")
+        for rel, code in self._all_mod_lua():
+            self.assertFalse('"hoki"' in code, f"{rel} still references the hoki prefab")
+            self.assertFalse('"elena_pack"' in code, f"{rel} still references elena_pack")
 
-    def test_hoki_no_unsafe_droptarget(self):
-        """Ensure DropTarget is never called, as it does not exist in DS Singleplayer."""
-        hoki_path = os.path.join(REPO_ROOT, "scripts", "prefabs", "hoki.lua")
-        with open(hoki_path, "r", encoding="utf-8") as f:
+    def test_no_dst_only_entity_tags(self):
+        """_combat / _inventoryitem tags only exist in DST; in DS such searches silently find nothing."""
+        for rel, code in self._all_mod_lua():
+            for tag in ('"_combat"', '"_inventoryitem"', "{'combat'}"):
+                self.assertFalse(tag in code, f"{rel} searches for DST-only tag {tag}")
+
+    def test_no_undeclared_dst_globals(self):
+        """DS runs with strict globals: reading a global that doesn't exist crashes the game."""
+        for rel, code in self._all_mod_lua():
+            self.assertFalse("TileGroupManager" in code, f"{rel} reads the DST-only global TileGroupManager")
+
+    def test_floatable_helper_is_guarded(self):
+        """MakeInventoryFloatable only exists with the SW/Hamlet scripts; call it through elena_util."""
+        for rel, code in self._all_mod_lua():
+            if rel.endswith("elena_util.lua"):
+                continue
+            self.assertFalse("MakeInventoryFloatable(" in code, f"{rel} calls MakeInventoryFloatable directly")
+
+    def test_no_missing_sound_events(self):
+        """These events don't exist in DS and were logged as FMOD errors."""
+        missing = ("dontstarve/common/staff\"", "wendy/emote", "abigail/level_up", "lava_arena")
+        for rel, code in self._all_mod_lua():
+            for snd in missing:
+                self.assertFalse(snd in code, f"{rel} plays missing sound {snd}")
+
+    def test_potions_safe_for_non_player_eaters(self):
+        """Pigs and birds eat potions off the ground and have no sanity component."""
+        for name in ("potion_magic.lua", "potion_sourceliquid.lua"):
+            with open(os.path.join(REPO_ROOT, "scripts", "prefabs", name), encoding="utf-8") as f:
+                code = f.read()
+            self.assertNotIn("eater.components.sanity:DoDelta", code, f"{name} assumes the eater has sanity")
+
+    def test_frost_elixir_checks_weapon(self):
+        """Holding an umbrella or lantern (no weapon component) used to crash the Frost Elixir."""
+        with open(os.path.join(REPO_ROOT, "scripts", "prefabs", "potion_icepowder.lua"), encoding="utf-8") as f:
             code = f.read()
+        self.assertNotIn("onarm.components.weapon", code)
+        self.assertIn("if not weapon then", code)
 
-        self.assertNotIn("DropTarget", code, "DropTarget method does not exist in Don't Starve Singleplayer and must not be used!")
-
-    def test_elena_does_not_spawn_with_elena_pack(self):
-        """Elaina should not start with elena_pack; it must be crafted from the Survival tab."""
-        elena_path = os.path.join(REPO_ROOT, "scripts", "prefabs", "elena.lua")
-        with open(elena_path, "r", encoding="utf-8") as f:
+    def test_level_damage_bonus_is_additive(self):
+        """SW/Hamlet damage modifiers are summed; adding 1 + bonus doubled Elaina's damage."""
+        with open(os.path.join(REPO_ROOT, "scripts", "components", "level.lua"), encoding="utf-8") as f:
             code = f.read()
-
-        self.assertNotIn('SpawnPrefab("elena_pack")', code, "elena.lua should not automatically grant elena_pack on spawn")
+        self.assertNotIn("1 + (bonus_ratio", code)
 
 
 if __name__ == '__main__':

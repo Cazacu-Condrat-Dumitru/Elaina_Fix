@@ -105,7 +105,7 @@ local function AvoidCombatCheck(inst) -- Check whether to avoid combat
     local owner = inst.components.follower.leader
     if owner then
         local x, _, z = owner.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, 0, z, CRITTER_AVOID_COMBAT_CHECK_RADIUS, {"_combat"}, {"wall"}) -- Find nearby combat entities
+        local ents = TheSim:FindEntities(x, 0, z, CRITTER_AVOID_COMBAT_CHECK_RADIUS, nil, {"wall", "INLIMBO"}) -- Find nearby combat entities
         for _, ent in pairs(ents) do
             local combat = ent.components.combat
             if combat and combat:HasTarget() then

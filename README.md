@@ -6,9 +6,9 @@
 [![CI Tests](https://github.com/Cazacu-Condrat-Dumitru/Elaina_Fix/actions/workflows/ci.yml/badge.svg)](https://github.com/Cazacu-Condrat-Dumitru/Elaina_Fix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An enhanced, community-maintained character mod bringing **Elaina (The Ashen Witch)** and her loyal companion **Hoki (Broom-san)** from *Wandering Witch: The Journey of Elaina* (*Majo no Tabitabi*) into **Don't Starve**.
+An enhanced, community-maintained character mod bringing **Elaina (The Ashen Witch)** from *Wandering Witch: The Journey of Elaina* (*Majo no Tabitabi*) into **Don't Starve**.
 
-This repository contains a full English localization, extensive bug fixes, modern balance adjustments, lore-accurate flight mechanics, and the complete transformable Hoki companion system.
+This repository contains a full English localization, crash fixes, balance adjustments and Elaina's own character voice, built on top of the original Workshop mod.
 
 ---
 
@@ -16,92 +16,60 @@ This repository contains a full English localization, extensive bug fixes, moder
 
 - **Original Character & Story**: Created by **Jougi Shiraishi** with original illustrations by **Azure** (*SB Creative / GA Novel*).
 - **Original Mod Creator**: Originally created by **lk** for the Don't Starve community on the Steam Workshop ([Original Steam Mod #3604181203](https://steamcommunity.com/sharedfiles/filedetails/?id=3604181203&tscn=1790467654)).
-- **This Enhanced Version**: Maintained by the community as an open-source project. Code and assets have been cleaned, translated into English, re-balanced, and extended with lore-accurate gameplay features. Note: Hoki currently uses the original character model with customized pink hair, custom portraits, and minimap icons; dedicated custom models and level-based visual updates will be created in future releases.
+- **This Enhanced Version**: Maintained by the community as an open-source project. Code has been cleaned, translated into English, fixed and re-balanced.
+
+> **Hoki (Broom-san) and the Traveler's Warded Pack are temporarily removed.** They used borrowed models (a pink-tinted Elaina and the vanilla backpack). They will come back once they have their own art. Their code remains in the git history (commit `05419d6`).
+>
+> Saves from older versions load fine, but a Hoki in the world disappears, and **items stored in the Traveler's Pack are lost**. Empty the pack before updating.
 
 ---
 
-## Key Features
+## Features
 
 ### 1. Elaina - The Ashen Witch
-- **Innate Genius**: As the youngest witch to pass the sorcery exam, Elaina starts with innate scientific insight:
-  - Grants $+1$ Science Tier bonus.
-  - Can craft essential traveler instruments (`lantern`, `compass`, `sewing_kit`) from memory without requiring advanced research prototypes.
-- **Leveling and Experience System**:
-  - Gains EXP by defeating hostile creatures and consuming cooked meals.
-  - Max Level: **100**.
-  - Each level permanently increases maximum Health, Hunger, Sanity, and spell potency.
-- **Three-Tier Light Novel Progression**:
-  - **Tier 1: Apprentice Traveler (Levels 1 - 19 / Vol. 1-3 & Anime)**: Classic young Ashen Witch traveling gear, learning the mysteries of the wilderness.
-  - **Tier 2: Wandering Sorceress (Levels 20 - 49 / Vol. 4-15)**: Unlocks an ambient warm magical light source (`Light` radius 2.4) making night travel safe, $+10\%$ bonus movement speed, and $+5\text{s}$ base flight duration.
-  - **Tier 3: Legendary Arch-Witch (Levels 50 - 100 / Vol. 7 mid-20s & Animate 2025 Grand Form)**: Unlocks a radiant celestial starlight aura (`Light` radius 4.0), continuous star sparkle particles, $+20\%$ travel speed, and innate **Mana Shield** thermal resistance against extreme heat and freezing cold.
+- **Stats**: 120 Health, 150 Hunger, 120 Sanity. A witch, not a brawler: -25% physical damage (like Wendy), with a slower sanity drain at night.
+- **Innate Genius**: +1 Science tier everywhere. She can craft the `lantern`, `compass` and `sewing_kit` without prototyping them.
+- **Her own voice**: Confident, a little vain and pragmatic. She would rather not get involved.
+- **Witchcraft tab**: Elaina can remake her broom, hat, wand and grimoire if she loses them.
 
-### 2. Witch's Broom and Aerial Flight (Level 10+)
-- **Dual-Function Weapon**:
-  - High durability melee weapon with configurable damage (Spear, Default 50, or Dark Sword tier).
-- **High-Speed Flight (Hotkey: `R`)**:
-  - Unlocked at **Level 10** when the broom is equipped in hands.
-  - Base duration: **10 seconds** (configurable), gaining $+1\text{s}$ duration every 5 levels.
-  - Grants **$+60\%$ movement speed**, ignores ground obstacles and walls (`COLLISION.FLYERS`), glides freely across rivers and open oceans, and leaves a sparkling starlight particle trail.
-  - Consumes a gentle stream of sanity while airborne. Includes a safe water-landing grace period.
+### 2. Leveling
+- EXP from kills (scaled by the creature's strength) and from eating.
+- EXP per level is `100 + 20 x level`. Level 10 takes about 1,800 EXP (a few days), level 20 about 5,700, level 50 about 29,400. Max level is 100.
+- Each level adds +1 max Health/Hunger/Sanity and +0.5% damage (both configurable).
+- **Level 20**: +10% move speed. **Level 50**: +20% move speed and a light weather ward (60 insulation against both cold and heat).
+- Press **L** to see your level, EXP, and the Mana Barrier status.
 
-### 3. Hoki (Broom-san) - Dual Form Companion
-In the light novel and anime, Elaina develops a magical spell that temporarily bestows her broom with human form.
+### 3. Witch's Broom and Flight (Level 10+)
+- Hold the broom and press **R** to fly: +60% speed, pass over walls, trees, boulders and creatures, and collect loose items within reach.
+- 10s base duration (+1s every 5 levels above 10). Costs 1 sanity per second (configurable). 3 seconds of rest after landing.
+- Flight keeps you over land and out of Hamlet interiors, so you can never be dropped into the sea or out of a room.
 
-- **Dual-Form Transformation**:
-  - The player can start the game with the broom in weapon form or Hoki in person (configurable in mod settings).
-  - Use the **Ancient Grimoire** (`book_ancientmagic`) to awaken the broom into Hoki, or return her to weapon form whenever needed.
-  - When Hoki's health reaches 0 in combat, she never dies permanently; instead, she gently returns to broom form to rest.
-- **Autonomous Ranged Magic Combat**:
-  - Hoki stays close to Elaina, engaging hostile monsters with homing magical starlight projectiles (`light_projectile`).
-  - Protects Elaina from ambushes and automatically targets whatever attacks her mistress.
-- **Sweets and Potions Upgrade System**:
-  - **Sweets (Honey, Taffy, Waffles, Cake)**: Increases Hoki's maximum Health by $+10$ and restores HP.
-  - **Magic Potions (`potion_magic`, `potion_sourceliquid`)**: Increases Hoki's magic attack power by $+2$ and fully heals her.
-- **Multi-Stage Power Evolution (Planned Visual Model Updates)**:
-  - Currently, Hoki uses the original character model with customized pink hair, custom portraits, and minimap icons.
-  - **Stage 1 (Apprentice Form)**: Base health and cheerful banter.
-  - **Stage 2 (Arch-Witch Form)**: Unlocks an ambient rose-pink light aura, 1.06 scale, $+10\%$ bonus damage, and scaling health.
-  - **Stage 3 (Starlight Witch Form)**: Brilliant celestial starlight radiance (light radius 3.8), continuous star particle aura, and enhanced projectile potency.
-  - *Future Update Plan*: Dedicated brand-new models and visual updates corresponding to each level tier will be created and added in future versions.
-- **Canon Personality and Dialogue**:
-  - Voiced in text with pastel pink font.
-  - Speaks genuine, cheerful, and polite quotes calling Elaina *"Lady Elaina"*, playfully teasing her when summoned for *"an extra pair of hands"*, and reminding her to eat sweets when hungry.
+### 4. Magic
+- **Magic Wand**: Fires homing star bolts (25 damage). Each hit costs 1 sanity (configurable).
+- **Gale Repulsion (Z)**: Hits hostile creatures within 8 units for 25 damage and knocks them back onto solid ground. Neutral animals and followers are unaffected. Costs 10 sanity, 12s cooldown.
+- **Mana Barrier**: Once per day, a lethal hit leaves Elaina at low health instead, heals her by 25 and casts a free Gale. The cooldown is saved with your game.
+- **Ancient Grimoire**: Reading it restores 40 sanity, once per day.
 
-### 4. Traveler's Warded Pack (elena_pack)
-- **14-Slot Grand Capacity (Krampus Sack Size)**: Fitted with a spacious 14-slot inventory (7x2 grid) using vanilla container frames, allowing Elaina to transport abundant spell reagents, collected flora, and survival provisions. Configurable in settings (8, 10, or 14 slots).
-- **75% Defensive Ward**: Woven with protective wards, providing 75% physical damage reduction without needing bulky wooden or marble armor.
-- **Food Preservation**: Features magical cooling that halves food and ingredient spoilage rate (acting as an enchanted travel cooler).
-- **Thermal & Weather Insulation**: Protects against hypothermia in winter and overheating in summer, plus 50% water resistance.
-- **Craftable Survival Satchel**: Can be crafted from the Survival tab with basic materials (4 cut grass, 4 twigs, 1 rope) without needing research stations.
-
-### 5. Defensive Magic & Flight Utility
-- **Gale Repulsion (Hotkey: `Z`)**: Releases a concussive burst of starlight wind that repels nearby aggressive enemies up to 7 units away, staggering attackers and creating breathing room.
-- **Mana Barrier (Emergency Ward)**: If Elaina receives a lethal blow that would otherwise kill her, her mana barrier instantly activates, negating death, restoring an emergency health buffer, releasing an automatic Gale Repulsion, and entering a 3-minute cooldown.
-- **Flight Resource Magnetism**: While soaring on her broom, nearby ground resources (grass, twigs, flint, petals, monster loot) are automatically collected into inventory or pack.
-- **Frost Nova (Frost Elixir)**: Consuming `potion_icepowder` now unleashes a Frost Nova, instantly freezing nearby monsters and putting out fires in a 12-unit radius in addition to temporarily enchanting equipped weapons with ice attacks.
+### 5. Potions (Magic tab, craft at a Shadow Manipulator)
+- **Mana Potion / Primordial Water**: Restore 5 Health and 5 Sanity every 3 seconds for 36 seconds.
+- **Frost Elixir**: A Frost Nova that freezes nearby hostile creatures and puts out fires. For 30s, +25% damage, and your weapon's hits add frost (the weapon's own effects are kept).
+- **Traveler's Potion**: A caffeinated speed boost (Shipwrecked/Hamlet).
 
 ---
 
 ## Mod Configuration (modinfo.lua)
 
-All settings use concise labels designed specifically to fit neatly inside Don't Starve's configuration menus:
-
 | Setting | Options | Default | Description |
 | :--- | :--- | :--- | :--- |
-| **EXP Multiplier** | `0.5x`, `1.0x`, `1.5x`, `2.0x`, `3.0x` | `1.0x` | Controls leveling speed from kills & food |
-| **Broom Damage** | `34`, `50`, `68`, `100` | `50` | Base damage of Elaina's broom weapon |
-| **Wand Damage** | `25`, `34`, `50`, `68`, `100` | `34` | Ranged damage of the Magic Wand |
-| **Hat Waterproof** | `50%`, `70%`, `90%`, `100%` | `100%` | Water resistance granted by Elaina's Hat |
-| **Damage / Level** | `0%`, `+0.5%`, `+1.0%`, `+2.0%` | `+1.0%` | Bonus attack power gained per level |
-| **Flight Duration** | `5s`, `10s`, `15s`, `20s`, `30s` | `10s` | Base flight duration at Level 10 |
-| **Flight Cost / sec**| `0/s`, `0.5/s`, `1.0/s`, `2.0/s` | `1.0/s` | Sanity consumed per second while flying |
-| **Broom Spell Cost** | `0`, `15`, `25`, `40` | `25` | Sanity cost to awaken Hoki via the Grimoire |
-| **Starting Form** | `Broom`, `Hoki` | `Broom` | Start with broom weapon or Hoki companion |
-| **Hoki Max Health** | `150`, `250`, `400`, `600` | `250` | Base health of Hoki companion |
-| **Hoki Magic Damage**| `20`, `34`, `50`, `68` | `34` | Ranged magical projectile attack damage |
-| **Hoki Sanity Aura** | `0`, `+2.4/m`, `+5.0/m`, `+10.0/m` | `+5.0/m` | Passive sanity restoration near Hoki |
-| **Hoki Command Key** | `V`, `Z`, `X`, `C`, `B`, `G`, `H`, `J`, `K` | `V` | Keyboard hotkey for companion commands |
-| **Satchel Slots** | `8 Slots`, `10 Slots`, `14 Slots` | `14 Slots` | Storage capacity of the Traveler Pack |
+| **EXP Multiplier** | `0.5x` - `3.0x` | `1.0x` | Leveling speed from kills & food |
+| **Broom Damage** | `17`, `25`, `34`, `50` | `34` | Melee damage of the broom |
+| **Wand Damage** | `20`, `25`, `34`, `50` | `25` | Damage of each star bolt |
+| **Wand Focus Cost** | `0`, `0.5`, `1`, `2` | `1` | Sanity per wand hit |
+| **Hat Waterproof** | `35%`, `50%`, `70%`, `100%` | `100%` | Rain protection of Elaina's hat |
+| **Damage / Level** | `0%` - `+1.0%` | `+0.5%` | Attack bonus per level |
+| **Stats / Level** | `+0`, `+1`, `+2` | `+1` | Max Health/Hunger/Sanity per level |
+| **Flight Duration** | `5s` - `30s` | `10s` | Base flight time at level 10 |
+| **Flight Cost / sec** | `0` - `2.0/s` | `1.0/s` | Sanity per second while flying |
 
 ---
 
@@ -117,15 +85,15 @@ Elaina_Fix/
 ├── images/
 │   ├── avatars/            # HUD badges and avatar icons
 │   ├── inventoryimages/    # Item inventory icons & atlases
-│   ├── map_icons/          # Minimap icons for Elaina and Hoki
+│   ├── map_icons/          # Minimap icons
 │   ├── saveslot_portraits/ # Save slot UI portraits
 │   └── selectscreen_portraits/
 ├── minimap/                # Minimap prefab atlases
 ├── scripts/
-│   ├── brains/             # AI Brains (hokibrain.lua, etc.)
+│   ├── brains/             # AI Brains
 │   ├── components/         # Custom Lua components (level.lua, magicpoint.lua, etc.)
-│   ├── prefabs/            # Entity prefabs (elena, hoki, elena_broom, etc.)
-│   └── stategraphs/        # StateGraphs (SGhoki.lua, etc.)
+│   ├── prefabs/            # Entity prefabs (elena, elena_broom, potions, etc.)
+│   └── stategraphs/        # StateGraphs
 ├── sound/                  # Audio banks (.fsb / .fev)
 ├── tests/                  # Automated test suite (Python / Lua 5.1 CI)
 ├── modicon.tex             # Mod listing icon texture

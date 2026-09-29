@@ -1,3 +1,5 @@
+local U = require "elena_util"
+
 local assets = {Asset("ANIM", "anim/elena_broom.zip"), Asset("ANIM", "anim/swap_elena_broom.zip"),
                 Asset("ATLAS", "images/inventoryimages/elena.xml"), Asset("IMAGE", "images/inventoryimages/elena.tex")}
 
@@ -27,6 +29,7 @@ local function fn(Sim)
     local anim = inst.entity:AddAnimState()
 
     MakeInventoryPhysics(inst)
+    U.MakeFloatable(inst)
 
     anim:SetBank("elena_broom")
 
@@ -34,12 +37,11 @@ local function fn(Sim)
 
     anim:PlayAnimation("idle")
 
-    inst:AddTag("sharp")
     inst:AddTag("broom")
     inst:AddTag("elena_broom")
 
     inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(TUNING.BROOM_DAMAGE)
+    inst.components.weapon:SetDamage(TUNING.BROOM_DAMAGE or 34)
     inst.components.weapon:SetRange(TUNING.BROOM_RANGE)
 
     inst:AddComponent("inspectable")
@@ -51,17 +53,6 @@ local function fn(Sim)
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
-
-    inst.OnSave = function(inst, data)
-        data.bonus_damage = inst.bonus_damage
-    end
-
-    inst.OnLoad = function(inst, data)
-        if data and data.bonus_damage then
-            inst.bonus_damage = data.bonus_damage
-            inst.components.weapon:SetDamage((TUNING.BROOM_DAMAGE or 50) + inst.bonus_damage)
-        end
-    end
 
     return inst
 end

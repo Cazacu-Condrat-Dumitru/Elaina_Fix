@@ -1,3 +1,51 @@
+Version 1.1 Update Log:
+--------------------------------------------------------------------------------
+Removed until they have their own models:
+   - Hoki (Broom-san) companion, her portraits/icons, and the Hoki config options.
+   - Traveler's Warded Pack (elena_pack). Items stored in it are lost in old saves.
+
+Crash fixes:
+   - Flight ending on its own read a DST-only global (TileGroupManager) -> crash.
+   - Frost Elixir while holding an umbrella/lantern (no weapon component) -> crash.
+   - Mana Potion / Primordial Water eaten by pigs or birds (no sanity) -> crash.
+   - Traveler's Potion called a Shipwrecked-only function in the base game.
+
+Bug fixes:
+   - Gale Repulsion, Frost Nova and flight item magnetism now work (they searched
+     for DST-only entity tags and never found anything).
+   - Gale and Frost Nova only affect hostile creatures, never neutral animals or
+     followers, and never knock enemies into water, walls or out of rooms.
+   - SW/Hamlet: Elaina dealt ~175% damage because the level bonus was added as
+     a full multiplier.
+   - Flight keeps world, sea and Hamlet interior-wall collision (no more flying
+     off the map or out of a room); no flying indoors, on a boat or while riding.
+   - Mana Barrier cooldown is saved; it no longer vanishes or resets on reload.
+   - R / L / Z no longer trigger while typing in the console or in menus.
+   - Starter items are no longer re-created on every load (duplication).
+   - Killing monsters no longer spawns extra brooms.
+   - Frost Elixir keeps (and restores) the weapon's own effect, e.g. Bat Bat.
+   - All mod items float in Shipwrecked instead of sinking.
+   - Replaced missing sound events that were logged as FMOD errors.
+   - Potion recipes: "nounlock" is now set correctly on SW/Hamlet.
+   - Elaina's speech is her own copy instead of overwriting Wendy's lines.
+
+Balance:
+   - New EXP curve (100 + 20 x level): level 10 in a few days, 50 is reachable.
+   - +1 max stats per level (was +2), +0.5% damage per level (was +1%).
+   - Removed the permanent tier light and full temperature immunity; level 50
+     now gives a 60-insulation weather ward instead.
+   - Magic Wand: 25 damage (as in the original), each hit costs 1 sanity.
+   - Broom: 34 damage by default (it's for flying, not fighting).
+   - Hat: dapper like a Top Hat, no lightning immunity; still 100% waterproof
+     by default, as in the original (configurable).
+   - Gale Repulsion costs 10 sanity. Mana Barrier: once per day (was 3 minutes).
+   - Ancient Grimoire (original: +40 sanity, unlimited): now once per day.
+   - New Witchcraft tab to re-craft the broom, hat, wand and grimoire.
+
+Lore:
+   - Elaina has her own lines (confident, a little vain, a pragmatic traveler).
+   - Removed invented "Volume/Animate" form names from the level tiers.
+
 Version 1.0 Update Log:
 --------------------------------------------------------------------------------
 1. Complete English Localization:

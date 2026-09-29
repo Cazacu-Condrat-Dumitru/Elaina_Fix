@@ -1,153 +1,106 @@
+local U = require "elena_util"
+
 local Assets = {Asset("ANIM", "anim/potion_icepowder.zip"), Asset("ATLAS", "images/inventoryimages/potions.xml"),
                 Asset("IMAGE", "images/inventoryimages/potions.tex")}
 
-local function freezeAttack(inst, attacker, target)
+local BUFF_DURATION = 30
+local DAMAGE_BONUS = 0.25
+local NOVA_RADIUS = 12
+local NOVA_COLDNESS = 4
+
+local function FreezeHit(attacker, target)
+    if not (target and target:IsValid()) then return end
     if target.components.freezable then
         target.components.freezable:AddColdness(1)
         target.components.freezable:SpawnShatterFX()
     end
-    if target.components.sleeper and target.components.sleeper:IsAsleep() then
-        target.components.sleeper:WakeUp()
-    end
     if target.components.burnable and target.components.burnable:IsBurning() then
         target.components.burnable:Extinguish()
     end
-    if target.components.combat then
-        target.components.combat:SuggestTarget(attacker)
-        if target.sg and not target.sg:HasStateTag("frozen") and target.sg.sg.states.hit then
-            target.sg:GoToState("hit")
-        end
-    end
 end
 
--- local function item_onuse(inst, doer)
---     print("---- icepowder item_onuse()")
+-- Adds a freezing touch to the held weapon for a while, keeping (and later
+-- restoring) whatever on-hit effect the weapon already had.
+local function EnchantWeapon(item)
+    local weapon = item and item.components.weapon
+    if not weapon then
+        return -- umbrellas, lanterns, tools without a weapon component
+    end
 
---     -- if doer.components.health then
---     --     doer.components.health:DoDelta(10) -- health modification function
---     -- end
---     if doer.components.inventory.equipslots.hands ~= nil then
---         local onarm = doer.components.inventory.equipslots.hands.components.weapon
---         -- onarm:SetDamage(20)
---         -- onarm:SetOnAttack(freezeAttack)
+    if item.elena_frost_task then
+        item.elena_frost_task:Cancel()
+    else
+        item.elena_frost_orig = weapon.onattack
+    end
 
---         -- doer:DoTaskInTime(TUNING.TOTAL_DAY_TIME , onarm:SetDamage(20))
---         -- doer:DoTaskInTime(TUNING.TOTAL_DAY_TIME , onarm:SetOnAttack(freezeAttack))
+    local orig = item.elena_frost_orig
+    weapon:SetOnAttack(function(w, attacker, target, projectile)
+        if orig then
+            orig(w, attacker, target, projectile)
+        end
+        FreezeHit(attacker, target)
+    end)
 
---         doer:DoTaskInTime(TUNING.SEG_TIME, onarm:SetDamage(20))
---         doer:DoTaskInTime(TUNING.SEG_TIME, onarm:SetOnAttack(freezeAttack))
---     end
---     -- eater.antihayfever_time = TUNING.ANTIHAYFEVER_TIME
---     -- --    if eater.antihayfever_task == nil then
---     -- if not eater:HasTag("has_hayfeverhat") then
---     --     eater.antihayfever_task = eater:DoTaskInTime(1, function()
---     --         preventHayfever(eater)
---     --     end)
---     -- end
---     print("----2 icepowder item_onuse()")
--- end
+    item.elena_frost_task = item:DoTaskInTime(BUFF_DURATION, function()
+        item.elena_frost_task = nil
+        if item.components.weapon then
+            item.components.weapon:SetOnAttack(item.elena_frost_orig)
+        end
+        item.elena_frost_orig = nil
+    end)
+end
+
+local function FrostNova(eater)
+    local x, y, z = eater.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, NOVA_RADIUS, nil, {"player", "companion", "INLIMBO", "FX", "NOCLICK"})
+    for _, ent in ipairs(ents) do
+        if ent:IsValid() then
+            if ent.components.burnable and ent.components.burnable:IsBurning() then
+                ent.components.burnable:Extinguish()
+            end
+            if ent.components.freezable and U.IsHostileTo(ent, eater) then
+                ent.components.freezable:AddColdness(NOVA_COLDNESS)
+                ent.components.freezable:SpawnShatterFX()
+            end
+        end
+    end
+    U.PlaySound(eater, "dontstarve/common/gem_shatter")
+end
 
 local function oneaten(inst, eater)
-    if eater.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) ~= nil then
-        -- local onarm = eater.components.inventory.equipslots.hands.components.weapon
-        local onarm = eater.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        onarm.components.weapon:SetOnAttack(freezeAttack)
-        onarm:DoTaskInTime(30, function()
-            onarm.components.weapon:SetOnAttack()
+    -- Only players can channel the elixir; animals just get the food value
+    if not (eater and eater:IsValid() and eater:HasTag("player")) then
+        return
+    end
+
+    if eater.components.inventory then
+        EnchantWeapon(eater.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS))
+    end
+
+    if eater.components.combat then
+        U.SetDamageBonus(eater, "elena_frost", DAMAGE_BONUS)
+        if eater.elena_frost_buff_task then
+            eater.elena_frost_buff_task:Cancel()
+        end
+        eater.elena_frost_buff_task = eater:DoTaskInTime(BUFF_DURATION, function()
+            eater.elena_frost_buff_task = nil
+            U.SetDamageBonus(eater, "elena_frost", 0)
         end)
     end
-    if eater.components.combat then
-        if eater.components.combat.AddDamageModifier then
-            eater.components.combat:AddDamageModifier("monika", 0.25)
-            eater:DoTaskInTime(30, function()
-                if eater:IsValid() and eater.components.combat then
-                    eater.components.combat:RemoveDamageModifier("monika")
-                end
-            end)
-        else
-            local old_mult = eater.components.combat.damagemultiplier or 1
-            eater.components.combat.damagemultiplier = old_mult + 0.25
-            eater:DoTaskInTime(30, function()
-                if eater:IsValid() and eater.components.combat then
-                    eater.components.combat.damagemultiplier = math.max(0.5, (eater.components.combat.damagemultiplier or 1.25) - 0.25)
-                end
-            end)
-        end
-    end
 
-    if eater and eater:IsValid() then
-        local x, y, z = eater.Transform:GetWorldPosition()
-        local ents = _G.TheSim:FindEntities(x, y, z, 12, {"_combat"}, {"player", "companion", "INLIMBO"})
-        for _, target in ipairs(ents) do
-            if target:IsValid() and target.components.freezable then
-                target.components.freezable:AddColdness(4)
-                target.components.freezable:SpawnShatterFX()
-            end
-            if target:IsValid() and target.components.sleeper and target.components.sleeper:IsAsleep() then
-                target.components.sleeper:WakeUp()
-            end
-            if target:IsValid() and target.components.burnable and target.components.burnable:IsBurning() then
-                target.components.burnable:Extinguish()
-            end
-        end
+    FrostNova(eater)
 
-        if eater.SoundEmitter then
-            eater.SoundEmitter:PlaySound("dontstarve/common/gem_shatter")
-        end
-
-        if eater.components.talker then
-            eater.components.talker:Say("Frost Nova unleashed!")
-        end
+    if eater.components.talker then
+        eater.components.talker:Say("Frost Nova!")
     end
 end
 
--- local id = "USE"
--- local name = "use"
--- local fn = function(act)
---     if act.doer.component then
---         act.doer.component.health:DoDelta(10) -- health modification function
---     end
--- end
-
--- AddAction(id,name,fn)
-
--- -- Define action
--- local USE = Action() -- Action has id, str, fn; fn receives act parameter with doer, target, invobject, pos
--- USE.id = "USE"
--- USE.str = "Use"
--- -- The four common action fields are doer, target, invobject, pos
--- USE.fn = function(act)
---     if act.doer.component then
---         act.doer.component.health:DoDelta(10) 
---     end
--- end
-
--- Register action
--- AddAction(USE)
-
--- Bind component
--- local function usepotion(component)
---     local old = component.CollectInventoryActions
---     component.CollectInventoryActions = function(doer, actions)
---         if doer.components.health then
---             table.insert(actions, ACTIONS.USE) -- test 2
---         end
---         old(doer, actions)
---     end
--- end
--- AddComponentPostInit("healer", usepotion)   
-
--- Bind state
--- AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.USE, "dolongaction"))
-
--- Write a local function that creats, customizes, and returns an instance of the prefab.
 local function fn(Sim)
     local inst = CreateEntity()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     MakeInventoryPhysics(inst)
-
-    -- inst.AddTag("potion")
+    U.MakeFloatable(inst)
 
     inst.AnimState:SetBank("potion_icepowder")
     inst.AnimState:SetBuild("potion_icepowder")
@@ -172,4 +125,3 @@ local function fn(Sim)
 end
 
 return Prefab("common/inventory/potion_icepowder", fn, Assets)
-
